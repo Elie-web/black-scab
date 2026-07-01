@@ -21,8 +21,8 @@ export default function Faq() {
         <SectionHeader
           className="mb-8 md:mb-10"
           kicker="Les questions"
-          title={<>Ce qu'on nous <span className="italic-display text-gradient-green-static">demande souvent</span>.</>}
-          lead="Tout ce qu'il faut savoir avant de vous lancer."
+          title={<>Reste une question ? <span className="italic-display text-gradient-green-static">Sûrement celle-ci.</span></>}
+          lead="Les réponses aux questions qu'on nous pose le plus, juste avant de se lancer."
         />
         <motion.div
           initial={{ opacity: 0, y: 16 }}

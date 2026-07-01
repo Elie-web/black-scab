@@ -52,7 +52,7 @@ export default function Navbar() {
         <div className="max-w-container mx-auto px-5 md:px-10 flex items-center justify-between">
 
           {/* Logo */}
-          <a href="#hero" className="group flex items-center gap-2.5" aria-label="House of Gibbs — accueil">
+          <a href="#hero" className="group flex items-center gap-2.5" aria-label="House of Gibbs, accueil">
             <img
               src={logoMark}
               alt=""

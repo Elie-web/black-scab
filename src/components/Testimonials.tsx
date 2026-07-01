@@ -31,8 +31,8 @@ export default function Testimonials() {
         <SectionHeader
           className="mb-6 md:mb-7"
           kicker="Les avis"
-          title={<>Ils en parlent <span className="italic-display text-gradient-green-static">mieux que nous</span>.</>}
-          lead="Vous avez vu les pièces. Voici les mots de celles et ceux qui les portent."
+          title={<>Ceux qui les portent <span className="italic-display text-gradient-green-static">en parlent mieux que nous</span>.</>}
+          lead="Vous avez vu le travail. Voici la voix de celles et ceux qui le portent tous les jours."
         />
 
         {/* Note Google — prominente */}

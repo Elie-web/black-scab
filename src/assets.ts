@@ -10,7 +10,6 @@ import logoMark from './assets/logo-hg.webp'      // monogramme hG. seul
 import markMountainSleeve from './assets/mark-mountain-sleeve.webp'
 import markChestSamurai   from './assets/mark-chest-samurai.webp'
 import markForearmPortrait from './assets/mark-forearm-portrait.webp'
-import markBackRam       from './assets/mark-back-ram.webp'
 
 import indyPortrait      from './assets/indy-portrait.webp'
 import indySpider        from './assets/indy-spider.webp'
@@ -24,6 +23,7 @@ import indyDoberman      from './assets/indy-doberman.webp'
 import processConsultation from './assets/process-consultation.webp'
 import processProjet        from './assets/process-projet.webp'
 import processSeance        from './assets/process-seance.webp'
+import processDesign        from './assets/process-design.webp'  // planche de croquis (libre de droit, Pexels)
 
 export {
   markSelfie,
@@ -33,7 +33,6 @@ export {
   markMountainSleeve,
   markChestSamurai,
   markForearmPortrait,
-  markBackRam,
   indyPortrait,
   indySpider,
   indyWomanWolf,
@@ -44,4 +43,5 @@ export {
   processConsultation,
   processProjet,
   processSeance,
+  processDesign,
 }

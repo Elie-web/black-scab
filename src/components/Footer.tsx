@@ -1,7 +1,11 @@
-import { ArrowUpRight } from 'lucide-react'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowUpRight, X } from 'lucide-react'
 import { HOUSE, ARTISTS } from '../config'
 import { InstagramIcon } from './icons'
 import { logoMark } from '../assets'
+
+const ease = [0.22, 1, 0.36, 1] as const
 
 const NAV_LINKS = [
   { label: 'Les artistes', href: '#artistes' },
@@ -11,7 +15,81 @@ const NAV_LINKS = [
   { label: 'Contact',      href: '#studio' },
 ]
 
+/* ── Modale mentions légales ──────────────────────────────────────────── */
+function LegalModal({ onClose }: { onClose: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      className="fixed inset-0 z-[120] flex items-center justify-center bg-ink/80 backdrop-blur-md p-4"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 24, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 24, scale: 0.97 }}
+        transition={{ duration: 0.32, ease }}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mentions légales"
+        className="relative w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-2xl bg-canvas text-ink border border-line shadow-luxe p-7 md:p-9"
+      >
+        <button
+          onClick={onClose}
+          aria-label="Fermer"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full border border-line flex items-center justify-center text-soft hover:text-ink hover:bg-canvas-2 transition-colors"
+        >
+          <X size={16} />
+        </button>
+
+        <p className="font-mono text-[10px] uppercase tracking-widest text-green mb-2">Informations légales</p>
+        <h2 className="font-display text-2xl font-500 text-ink mb-6">Mentions légales</h2>
+
+        <div className="space-y-6 font-sans text-[14px] text-ink/75 leading-relaxed">
+          <section>
+            <h3 className="font-600 text-ink mb-1.5">Éditeur du site</h3>
+            <p>
+              {HOUSE.name}, [forme juridique à compléter], SIRET [à compléter].<br />
+              {HOUSE.address}, {HOUSE.cityZip}.<br />
+              Téléphone : {HOUSE.phone} · E-mail : {HOUSE.email}<br />
+              Directeur de la publication : [à compléter].
+            </p>
+          </section>
+          <section>
+            <h3 className="font-600 text-ink mb-1.5">Hébergement</h3>
+            <p>Site hébergé par [hébergeur à compléter], [adresse de l'hébergeur].</p>
+          </section>
+          <section>
+            <h3 className="font-600 text-ink mb-1.5">Propriété intellectuelle</h3>
+            <p>
+              L'ensemble des contenus de ce site (photographies, textes, logo, identité visuelle) est la
+              propriété de {HOUSE.name}. Toute reproduction, même partielle, est interdite sans autorisation
+              écrite préalable.
+            </p>
+          </section>
+          <section>
+            <h3 className="font-600 text-ink mb-1.5">Données personnelles</h3>
+            <p>
+              Les informations transmises via le formulaire de contact servent uniquement à répondre à votre
+              demande. Elles ne sont ni revendues ni cédées. Conformément au RGPD, vous disposez d'un droit
+              d'accès, de rectification et de suppression de vos données en écrivant à {HOUSE.email}.
+            </p>
+          </section>
+        </div>
+
+        <p className="mt-7 pt-5 border-t border-line font-sans text-[12px] text-muted">
+          Modèle à finaliser avec les informations administratives de la maison avant la mise en ligne.
+        </p>
+      </motion.div>
+    </motion.div>
+  )
+}
+
 export default function Footer() {
+  const [legalOpen, setLegalOpen] = useState(false)
+
   return (
     <footer className="bg-ink text-canvas px-5 md:px-10 pt-16 pb-28 lg:pb-10">
       <div className="max-w-container mx-auto">
@@ -78,7 +156,15 @@ export default function Footer() {
         </div>
 
         <div className="pt-8 border-t border-ink-line flex flex-col md:flex-row items-center justify-between gap-3 text-center">
-          <p className="font-sans text-xs text-muted">© 2026 {HOUSE.name}. Tous droits réservés.</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+            <p className="font-sans text-xs text-muted">© 2026 {HOUSE.name}. Tous droits réservés.</p>
+            <button
+              onClick={() => setLegalOpen(true)}
+              className="font-sans text-xs text-muted hover:text-green-3 underline underline-offset-2 decoration-ink-line hover:decoration-green-3 transition-colors"
+            >
+              Mentions légales
+            </button>
+          </div>
           <p className="font-sans text-xs text-muted">
             Site web réalisé par{' '}
             <a
@@ -92,6 +178,10 @@ export default function Footer() {
           </p>
         </div>
       </div>
+
+      <AnimatePresence>
+        {legalOpen && <LegalModal onClose={() => setLegalOpen(false)} />}
+      </AnimatePresence>
     </footer>
   )
 }

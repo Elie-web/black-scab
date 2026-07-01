@@ -17,7 +17,7 @@ export default function Contact() {
         <SectionHeader
           className="mb-12 md:mb-16"
           kicker="Contact"
-          title={<>Vous avez une idée ? <span className="italic-display text-gradient-green-static">On est là.</span></>}
+          title={<>On y est. <span className="italic-display text-gradient-green-static">Parlez-nous de votre projet.</span></>}
           lead="Même floue. Même si vous n'êtes pas sûr du style ou de l'emplacement. C'est souvent comme ça que ça commence. Dites-nous ce que vous avez en tête, on vous répond en personne."
         />
 

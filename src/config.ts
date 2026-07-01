@@ -11,7 +11,6 @@ import {
   markMountainSleeve,
   markChestSamurai,
   markForearmPortrait,
-  markBackRam,
   indyPortrait,
   indySpider,
   indyWomanWolf,
@@ -94,7 +93,7 @@ export const ARTISTS: Artist[] = [
     role:      'Le père',
     specialty: 'Réalisme · noir & gris · couleur',
     accent:    '#2B312E', // graphite
-    bio:       "Le réalisme est son langage : la finesse des détails, la profondeur des dégradés, la justesse du trait. Près de trente ans à n'explorer que cela, du noir & gris à la grande pièce couleur. Mark dessine des tatouages pensés pour durer — de ceux qui gardent toute leur netteté au fil des années et vieillissent avec vous.",
+    bio:       "Trente ans que Mark ne parle qu'une seule langue : celle du réalisme. Il connaît la profondeur d'un dégradé, le poids d'une ombre, l'endroit exact où un trait doit se poser pour ne plus jamais bouger. Sous son aiguille, une photo devient peau et un souvenir prend du relief. Il ne cherche pas l'effet du moment — il dessine des pièces qui auront encore de l'allure dans vingt ans, et qui vieilliront avec vous plutôt que contre vous.",
     portrait:  markSelfie,
     instagram: 'https://www.instagram.com/markblackscab/?hl=fr',
     facebook:  'https://www.facebook.com/p/Blackscab-Tattoos-Chambéry-73-100063680827033/?locale=fr_FR',
@@ -104,7 +103,6 @@ export const ARTISTS: Artist[] = [
       { type: 'image', src: markMountainSleeve,  alt: 'Manchette réaliste : forêt et montagnes au coucher du soleil' },
       { type: 'image', src: markChestSamurai,    alt: 'Pièce pleine poitrine, composition couleur et graphique' },
       { type: 'video', src: '/videos/mark-color-sleeve.webp', video: '/videos/mark-color-sleeve.mp4', alt: 'Reel · manchette couleur, portrait et plumes', href: 'https://www.instagram.com/markblackscab/' },
-      { type: 'image', src: markBackRam,         alt: 'Grande pièce de dos, bélier et flammes en couleur' },
       { type: 'image', src: markForearmPortrait, alt: 'Avant-bras réaliste, portrait et motif géométrique' },
     ],
   },
@@ -115,7 +113,7 @@ export const ARTISTS: Artist[] = [
     role:      'La mère',
     specialty: 'Fine line · floral · couleur douce',
     accent:    '#16745A', // émeraude (couleur maison)
-    bio:       "Zazz écoute longuement avant de dessiner — et cela se ressent dans chaque trait. Vous repartez avec ce que vous aviez imaginé, parfois plus juste encore. Fine line, compositions florales, couleurs douces : tout ce qui demande délicatesse et précision est son domaine.",
+    bio:       "Zazz dessine comme elle écoute : lentement, jusqu'à ce que votre idée trouve sa forme la plus juste. Ses lignes sont fines, ses fleurs presque vivantes, ses couleurs posées avec la douceur d'un souffle. On vient la voir pour une pièce délicate, on repart avec un peu de soi, mis en trait.",
     portrait:  '', // placeholder — photos à venir
     instagram: 'https://www.instagram.com/',
     gallery: [
@@ -132,7 +130,7 @@ export const ARTISTS: Artist[] = [
     role:      'Le fils',
     specialty: 'Réalisme · blackwork · graphique',
     accent:    '#11998E', // vert-teal frais
-    bio:       "Indy est l'œil graphique de la maison : un blackwork affirmé, un réalisme net et des compositions qui ont du caractère. Il ne reproduit jamais un motif — il imagine une pièce qui n'existera qu'en un seul exemplaire, sur votre peau.",
+    bio:       "Indy, c'est l'œil graphique de la maison : un noir profond et franc, un réalisme net, des compositions qui tiennent debout toutes seules. Il ne recopie jamais rien. Chaque motif naît pour une peau et une seule, et n'existera nulle part ailleurs — le vôtre n'appartiendra qu'à vous.",
     portrait:  indyPortrait,
     instagram: 'https://www.instagram.com/in_dtatts/',
     gallery: [
@@ -149,7 +147,7 @@ export const ARTISTS: Artist[] = [
 ]
 
 // --- Le déroulé (3 étapes) ---------------------------------------
-// id : sert à associer le mockup visuel (voir ProcessMockups.tsx)
+// id : identifiant logique de l'étape
 // tagline : phrase courte, lisible en un coup d'œil
 // points : 3 repères scannables
 export const PROCESS = [
@@ -158,14 +156,14 @@ export const PROCESS = [
     id:      'consultation',
     title:   'La consultation',
     tagline: 'Votre idée, bien comprise.',
-    points:  ["On écoute votre idée jusqu'à la cerner précisément", "On vous oriente vers la main faite pour votre style", 'Nos conseils pour une pièce qui traverse les années'],
+    points:  ["On écoute votre idée jusqu'à bien la cerner", "On vous oriente vers la main faite pour votre style", 'Nos conseils pour une pièce qui tiendra dans le temps'],
   },
   {
     step:    '02',
     id:      'projet',
     title:   'Le projet',
     tagline: "Un dessin rien qu'à vous.",
-    points:  ['Un dessin pensé pour votre corps, jamais décalqué', 'Jamais un motif sorti d’un catalogue', "Rien ne commence avant votre accord"],
+    points:  ['Un dessin pensé pour votre morphologie, pas un décalque', 'Une pièce unique, jamais un motif de catalogue', 'Rien ne démarre sans votre feu vert'],
   },
   {
     step:    '03',
@@ -188,7 +186,7 @@ export const SOCIAL = {
 export const REASSURANCE = [
   { icon: 'star',     title: `${SOCIAL.rating} sur Google`,        sub: `${SOCIAL.reviewCount} avis vérifiés` },
   { icon: 'clock',    title: '~30 ans de métier',                  sub: 'Des pièces qui traversent les années' },
-  { icon: 'shield',   title: 'Hygiène stricte',                    sub: 'À chaque séance, un soin sans compromis' },
+  { icon: 'shield',   title: 'Hygiène stricte',                    sub: 'Matériel à usage unique, à chaque séance' },
   { icon: 'mountain', title: 'Studio privé, sur RDV',              sub: "Votre projet, le seul de la journée" },
 ] as const
 
@@ -208,7 +206,7 @@ export const FAQ = [
   },
   {
     q: 'Tatouez-vous les mineurs ?',
-    a: "Non, la maison tatoue uniquement les personnes majeures. Une pièce d'identité vous sera demandée le jour de la séance.",
+    a: "Non, on tatoue uniquement les personnes majeures. On vous demandera une pièce d'identité le jour de la séance.",
   },
   {
     q: 'Comment choisir entre Mark, Zazz et Indy ?',

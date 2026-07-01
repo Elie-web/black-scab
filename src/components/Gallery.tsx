@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { X, ChevronLeft, ChevronRight, Plus, ImageIcon, ArrowUpRight } from 'lucide-react'
 import { ARTISTS, type GalleryItem } from '../config'
 import SectionHeader from './SectionHeader'
@@ -113,6 +113,7 @@ export default function Gallery() {
   const [filter, setFilter] = useState<string>('all')
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [videoTile, setVideoTile] = useState<Tile | null>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   const tiles = useMemo(
     () => (filter === 'all' ? ALL_TILES : ALL_TILES.filter((t) => t.artistId === filter)),
@@ -120,6 +121,12 @@ export default function Gallery() {
   )
   // Lightbox ne navigue que sur les images réelles (pas les placeholders, pas les vidéos)
   const images = useMemo(() => tiles.filter((t) => t.type === 'image' && t.src), [tiles])
+
+  const scrollBy = (dir: number) => {
+    const el = scrollRef.current
+    if (!el) return
+    el.scrollBy({ left: dir * el.clientWidth * 0.82, behavior: 'smooth' })
+  }
 
   const TABS = [
     { id: 'all', name: 'Tous', accent: '#2B312E', count: ALL_TILES.length },
@@ -132,14 +139,13 @@ export default function Gallery() {
   ]
 
   return (
-    <section id="galerie" className="py-16 sm:py-24 md:py-32 px-5 md:px-10 bg-canvas-2/50 border-y border-line">
-      <div className="max-w-container mx-auto">
-
+    <section id="galerie" className="py-16 sm:py-24 md:py-32 bg-canvas-2/50 border-y border-line overflow-hidden">
+      <div className="max-w-container mx-auto px-5 md:px-10">
         <SectionHeader
           className="mb-10 md:mb-12"
           kicker="La galerie"
-          title={<>Un coup d'œil avant <span className="italic-display text-gradient-green-static">de vous décider</span>.</>}
-          lead="Leur travail, pièce par pièce. Photos et reels, classés par artiste."
+          title={<>Assez décrit. <span className="italic-display text-gradient-green-static">Regardez plutôt.</span></>}
+          lead="Leur travail en vrai, pièce par pièce. Filtrez par artiste, agrandissez celles qui vous arrêtent."
         />
 
         {/* Filtres par artiste */}
@@ -153,7 +159,7 @@ export default function Gallery() {
               return (
                 <button
                   key={t.id}
-                  onClick={() => { setFilter(t.id); setLightboxIndex(null) }}
+                  onClick={() => { setFilter(t.id); setLightboxIndex(null); scrollRef.current?.scrollTo({ left: 0, behavior: 'smooth' }) }}
                   aria-pressed={active}
                   className={`group relative flex items-center gap-2.5 pl-3.5 pr-2.5 py-2.5 rounded-full text-[15px] font-600 border transition-all duration-300 ${
                     active
@@ -178,109 +184,129 @@ export default function Gallery() {
             })}
           </div>
         </div>
+      </div>
 
-        {/* Grille */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 md:gap-3 md:auto-rows-[300px]">
-          <AnimatePresence mode="popLayout">
-            {tiles.map((tile, i) => {
-              const isVideo = tile.type === 'video'
-              const big = i % 5 === 0 // rythme éditorial
-              const commonClass = `group relative overflow-hidden rounded-2xl bg-canvas-2 cursor-pointer aspect-square md:aspect-auto ${big ? 'md:row-span-2' : ''}`
+      {/* Carrousel horizontal */}
+      <div className="relative max-w-container mx-auto">
+        {/* Flèches (desktop) */}
+        <button
+          onClick={() => scrollBy(-1)}
+          aria-label="Voir les pièces précédentes"
+          className="hidden md:flex absolute left-3 lg:left-5 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white border border-line shadow-luxe items-center justify-center text-ink hover:bg-canvas hover:scale-105 transition-all"
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <button
+          onClick={() => scrollBy(1)}
+          aria-label="Voir les pièces suivantes"
+          className="hidden md:flex absolute right-3 lg:right-5 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white border border-line shadow-luxe items-center justify-center text-ink hover:bg-canvas hover:scale-105 transition-all"
+        >
+          <ChevronRight size={20} />
+        </button>
 
-              // Placeholder : photo pas encore fournie
-              if (!tile.src) {
-                return (
-                  <motion.div
-                    key={tile.uid}
-                    layout
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.96 }}
-                    transition={{ duration: 0.4, ease }}
-                    className={`relative overflow-hidden rounded-2xl bg-canvas-2 aspect-square md:aspect-auto flex flex-col items-center justify-center gap-2 text-muted ${big ? 'md:row-span-2' : ''}`}
-                  >
-                    <div className="absolute inset-0 ring-1 ring-inset ring-ink/5 rounded-2xl pointer-events-none" />
-                    <ImageIcon size={24} strokeWidth={1.5} style={{ color: tile.accent }} />
-                    <span className="font-mono text-[10px] uppercase tracking-widest">
-                      {isVideo ? 'Reel à venir' : 'Photo à venir'}
-                    </span>
-                  </motion.div>
-                )
-              }
+        <div
+          ref={scrollRef}
+          className="flex gap-3 md:gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar px-5 md:px-12 lg:px-16 pb-3"
+        >
+          {tiles.map((tile) => {
+            const isVideo = tile.type === 'video'
+            const sizing = 'shrink-0 snap-start w-[64vw] sm:w-[300px] md:w-[340px] aspect-[3/4]'
 
-              const inner = (
-                <>
-                  {isVideo && tile.video ? (
-                    <video
-                      src={tile.video}
-                      poster={tile.src}
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      preload="metadata"
-                      className="w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
-                    />
-                  ) : (
-                    <img
-                      src={tile.src}
-                      alt={tile.alt}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
-                    />
-                  )}
+            // Placeholder : photo pas encore fournie
+            if (!tile.src) {
+              return (
+                <motion.div
+                  key={tile.uid}
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, margin: '-10%' }}
+                  transition={{ duration: 0.4, ease }}
+                  className={`relative overflow-hidden rounded-2xl bg-canvas-2 flex flex-col items-center justify-center gap-2 text-muted ${sizing}`}
+                >
                   <div className="absolute inset-0 ring-1 ring-inset ring-ink/5 rounded-2xl pointer-events-none" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/0 to-ink/0 opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
-
-                  {/* Badge agrandir (photos uniquement — les reels tournent en boucle) */}
-                  {!isVideo && (
-                    <span className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center bg-canvas/90 transition-transform duration-300 group-hover:scale-110">
-                      <Plus size={17} strokeWidth={2.25} className="text-ink" />
-                    </span>
-                  )}
-
-                  {/* Légende */}
-                  <span className="absolute left-4 right-4 bottom-4 flex items-center gap-2 text-left translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-[transform,opacity] duration-300">
-                    <span className="h-px w-5 shrink-0" style={{ background: tile.accent }} />
-                    <span className="font-mono text-[10.5px] uppercase tracking-wide text-canvas leading-tight">
-                      {isVideo ? 'Reel · ' : 'Par '}{tile.artistName}
-                    </span>
+                  <ImageIcon size={24} strokeWidth={1.5} style={{ color: tile.accent }} />
+                  <span className="font-mono text-[10px] uppercase tracking-widest">
+                    {isVideo ? 'Reel à venir' : 'Photo à venir'}
                   </span>
-                </>
+                </motion.div>
               )
+            }
 
-              return isVideo ? (
-                <motion.button
-                  key={tile.uid}
-                  layout
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.4, ease }}
-                  onClick={() => (tile.video ? setVideoTile(tile) : window.open(tile.href, '_blank'))}
-                  className={commonClass}
-                  aria-label={`Lire le reel : ${tile.alt}`}
-                >
-                  {inner}
-                </motion.button>
-              ) : (
-                <motion.button
-                  key={tile.uid}
-                  layout
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.4, ease }}
-                  onClick={() => setLightboxIndex(images.findIndex((im) => im.src === tile.src))}
-                  className={commonClass}
-                  aria-label={`Agrandir : ${tile.alt}`}
-                >
-                  {inner}
-                </motion.button>
-              )
-            })}
-          </AnimatePresence>
+            const inner = (
+              <>
+                {isVideo && tile.video ? (
+                  <video
+                    src={tile.video}
+                    poster={tile.src}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    className="w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
+                  />
+                ) : (
+                  <img
+                    src={tile.src}
+                    alt={tile.alt}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
+                  />
+                )}
+                <div className="absolute inset-0 ring-1 ring-inset ring-ink/5 rounded-2xl pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/0 to-ink/0 opacity-70 group-hover:opacity-100 transition-opacity duration-400" />
+
+                {/* Badge agrandir (photos uniquement — les reels tournent en boucle) */}
+                {!isVideo && (
+                  <span className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center bg-canvas/90 transition-transform duration-300 group-hover:scale-110">
+                    <Plus size={17} strokeWidth={2.25} className="text-ink" />
+                  </span>
+                )}
+
+                {/* Légende */}
+                <span className="absolute left-4 right-4 bottom-4 flex items-center gap-2 text-left">
+                  <span className="h-px w-5 shrink-0" style={{ background: tile.accent }} />
+                  <span className="font-mono text-[10.5px] uppercase tracking-wide text-canvas leading-tight">
+                    {isVideo ? 'Reel · ' : 'Par '}{tile.artistName}
+                  </span>
+                </span>
+              </>
+            )
+
+            return isVideo ? (
+              <motion.button
+                key={tile.uid}
+                initial={{ opacity: 0, scale: 0.96 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: '-10%' }}
+                transition={{ duration: 0.4, ease }}
+                onClick={() => (tile.video ? setVideoTile(tile) : window.open(tile.href, '_blank'))}
+                className={`group relative overflow-hidden rounded-2xl bg-canvas-2 cursor-pointer ${sizing}`}
+                aria-label={`Lire le reel : ${tile.alt}`}
+              >
+                {inner}
+              </motion.button>
+            ) : (
+              <motion.button
+                key={tile.uid}
+                initial={{ opacity: 0, scale: 0.96 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: '-10%' }}
+                transition={{ duration: 0.4, ease }}
+                onClick={() => setLightboxIndex(images.findIndex((im) => im.src === tile.src))}
+                className={`group relative overflow-hidden rounded-2xl bg-canvas-2 cursor-pointer ${sizing}`}
+                aria-label={`Agrandir : ${tile.alt}`}
+              >
+                {inner}
+              </motion.button>
+            )
+          })}
         </div>
+
+        {/* Indice de défilement mobile */}
+        <p className="md:hidden text-center font-mono text-[10px] uppercase tracking-widest text-muted mt-1">
+          Faites glisser →
+        </p>
       </div>
 
       <AnimatePresence>

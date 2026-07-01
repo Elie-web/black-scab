@@ -1,14 +1,16 @@
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import { useRef } from 'react'
-import { ArrowRight, ChevronDown, Mountain, Star, Phone } from 'lucide-react'
+import { ArrowRight, ChevronDown, Mountain, Star, Phone, Clock, ShieldCheck, type LucideIcon } from 'lucide-react'
 import { HOUSE, SOCIAL, REASSURANCE } from '../config'
 import { useBooking } from '../booking'
 import Magnetic from './Magnetic'
 import { GoogleG } from './icons'
 
-const TRUST = REASSURANCE.filter((r) => r.icon !== 'star').map((r) => r.title)
-
 const ease = [0.22, 1, 0.36, 1] as const
+
+// Repères de confiance affichés dans le hero (hors note Google, déjà en pastille)
+const TRUST_ICONS: Record<string, LucideIcon> = { clock: Clock, shield: ShieldCheck, mountain: Mountain }
+const TRUST = REASSURANCE.filter((r) => r.icon !== 'star')
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null)
@@ -81,7 +83,7 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.6, ease }}
           className="mt-5 sm:mt-7 max-w-xl font-sans text-[15px] sm:text-[17px] leading-relaxed font-400 text-white/85 text-shadow-sub text-pretty"
         >
-          Vous avez une idée en tête. On en fait une pièce que vous porterez toute une vie, pensée pour traverser le temps. Réalisme, fine line ou graphique : ensemble, on trouve l'artiste fait pour votre projet. Studio privé à {HOUSE.city}, sur rendez-vous.
+          Vous avez une idée en tête. On en fait une pièce que vous porterez toute votre vie. Réalisme, fine line ou graphique : ensemble, on trouve l'artiste fait pour votre projet. Studio privé à {HOUSE.city}, sur rendez-vous.
         </motion.p>
 
         {/* CTAs */}
@@ -134,14 +136,23 @@ export default function Hero() {
               <span className="text-[13px] text-white/65">· {SOCIAL.reviewCount} avis</span>
             </span>
           </a>
-          <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
-            {TRUST.map((t, i) => (
-              <li key={t} className="flex items-center">
-                {i > 0 && <span className="mr-4 h-1 w-1 rounded-full bg-white/30" aria-hidden="true" />}
-                <span className="font-sans text-[12.5px] font-500 text-white/70 text-shadow-sub">{t}</span>
-              </li>
-            ))}
+
+          {/* Repères de confiance — remontés du bandeau, en chips compactes */}
+          <ul className="flex flex-wrap items-center justify-center gap-2">
+            {TRUST.map((r) => {
+              const Icon = TRUST_ICONS[r.icon] ?? ShieldCheck
+              return (
+                <li
+                  key={r.title}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 backdrop-blur-md px-3 py-1.5"
+                >
+                  <Icon size={13} strokeWidth={2} className="text-green-3 shrink-0" aria-hidden="true" />
+                  <span className="font-sans text-[12px] font-500 text-white/90 whitespace-nowrap">{r.title}</span>
+                </li>
+              )
+            })}
           </ul>
+
           {/* Téléphone — visible immédiatement pour les visiteurs Maps */}
           <a
             href={`tel:${HOUSE.phoneRaw}`}
